@@ -41,7 +41,7 @@ I'm also a Codeforces Specialist and love building tools like 'WhiteBox' for mar
 If asked a question not in this list, answer naturally based on my background as a developer and student.
 """
 
-st.title("🤖 Chat with Daksh")
+st.title("🤖 Chat with Me")
 st.write("Ask me about my life, my superpower, or how I grow!")
 # --- MAIN APP ---
 # 1. Record Audio
