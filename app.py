@@ -10,7 +10,7 @@ import base64
 # --- CONFIGURATION ---
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key=os.getenv("API") # <--- PASTE KEY HERE
+    api_key="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"# <--- PASTE KEY HERE
 )
 
 # --- 2. YOUR PERSONA (THE BRAIN) ---
