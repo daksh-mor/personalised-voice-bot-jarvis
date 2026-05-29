@@ -3,6 +3,7 @@ from streamlit_mic_recorder import mic_recorder
 from openai import OpenAI
 from gtts import gTTS
 import io
+import base64
 from dotenv import load_dotenv
 load_dotenv()
 import os
