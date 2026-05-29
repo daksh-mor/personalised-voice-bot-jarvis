@@ -6,11 +6,12 @@ import io
 from dotenv import load_dotenv
 load_dotenv()
 import os
-import base64
+st.set_page_config(page_title="Voice Bot - Hanuman Ram", page_icon="🤖", layout="wide")
+
 # --- CONFIGURATION ---
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key="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"# <--- PASTE KEY HERE
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 # --- 2. YOUR PERSONA (THE BRAIN) ---
@@ -42,9 +43,30 @@ If asked a question not in this list, answer naturally based on my background as
 """
 
 st.title("🤖 Chat with Me")
-st.write("Ask me about my life, my superpower, or how I grow!")
+st.markdown("### Ask me about my life, superpower, growth areas, and more!")
+st.markdown("---")
+
+# Initialize session state for conversation history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display conversation history
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        st.write(f"👤 **You:** {message['content']}")
+    else:
+        st.write(f"🤖 **Me:** {message['content']}")
+
+# Clear history button
+if st.button("Clear Conversation"):
+    st.session_state.messages = []
+    st.rerun()
+
+st.divider()
+
 # --- MAIN APP ---
 # 1. Record Audio
+st.markdown("### 🎤 Start Recording")
 audio_data = mic_recorder(
     start_prompt="🎤 Start Speaking",
     stop_prompt="🛑 Stop Recording",
@@ -67,6 +89,9 @@ if audio_data:
         user_text = transcription.text
         st.success(f"You said: {user_text}")
 
+        # Save user message to history
+        st.session_state.messages.append({"role": "user", "content": user_text})
+
         # 3. Generate Response (Brain)
         st.write("🧠 Thinking...")
         completion = client.chat.completions.create(
@@ -78,6 +103,9 @@ if audio_data:
         )
         ai_response = completion.choices[0].message.content
         st.info(f"AI: {ai_response}")
+
+        # Save AI response to history
+        st.session_state.messages.append({"role": "assistant", "content": ai_response})
 
 # 4. Convert to Audio (Mouth)
         st.write("🗣️ Generating Voice...")
@@ -97,6 +125,22 @@ if audio_data:
                 </audio>
             """
             st.markdown(md, unsafe_allow_html=True)
+        
+        # Cleanup temp files
+        import os
+        if os.path.exists("temp_input.wav"):
+            os.remove("temp_input.wav")
+        if os.path.exists("response.mp3"):
+            os.remove("response.mp3")
 
+    except FileNotFoundError:
+        st.error("❌ Audio recording failed. Please try again.")
     except Exception as e:
-        st.error(f"Something went wrong: {e}")
+        error_msg = str(e)
+        if "API" in error_msg or "authentication" in error_msg.lower():
+            st.error("❌ API Error: Check your API key in .env file")
+        elif "timeout" in error_msg.lower():
+            st.error("❌ Request timed out. Please try again.")
+        else:
+            st.error(f"❌ Something went wrong: {e}")
+        st.info("💡 Try refreshing the page or checking your connection.")
