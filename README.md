@@ -54,15 +54,28 @@ The bot is trained to answer:
 ## 🚢 Deployment
 
 ### Option 1: **Streamlit Cloud** (Recommended - Free)
-```bash
-# Push to GitHub
-git add .
-git commit -m "Deploy voice bot"
-git push
 
-# Then go to: https://streamlit.io/cloud
-# Connect your GitHub repo and deploy
-```
+1. **Push to GitHub** (already done ✅)
+
+2. **Deploy on Streamlit Cloud**:
+   - Go to https://share.streamlit.io
+   - Click "New app"
+   - Select your GitHub repo: `personalised-voice-bot-jarvis`
+   - Select branch: `main`
+   - Select file: `app.py`
+   - Click "Deploy"
+
+3. **Set API Key Secrets** (IMPORTANT):
+   - After deployment, click **"Manage app"** (lower right)
+   - Go to **Secrets** tab
+   - Add this line:
+     ```
+     GROQ_API_KEY = "your_groq_api_key_here"
+     ```
+   - Click "Save"
+   - App will auto-reload ✅
+
+4. **Get your app URL** from Streamlit Cloud dashboard
 
 ### Option 2: **Railway** (Free tier available)
 ```bash

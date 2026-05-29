@@ -9,9 +9,20 @@ import os
 st.set_page_config(page_title="Voice Bot - Hanuman Ram", page_icon="🤖", layout="wide")
 
 # --- CONFIGURATION ---
+# Try to get API key from Streamlit secrets (Cloud) or .env (Local)
+try:
+    api_key = st.secrets["GROQ_API_KEY"]
+except KeyError:
+    api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    st.error("🚨 API Key Missing!")
+    st.info("**Local Setup**: Add `GROQ_API_KEY` to `.env`\n\n**Streamlit Cloud**: Click 'Manage app' → Secrets → Add `GROQ_API_KEY`")
+    st.stop()
+
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key=os.getenv("GROQ_API_KEY")
+    api_key=api_key
 )
 
 # --- 2. YOUR PERSONA (THE BRAIN) ---
